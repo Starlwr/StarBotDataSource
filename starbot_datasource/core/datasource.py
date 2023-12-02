@@ -197,11 +197,13 @@ class JsonDataSource(DataSource):
                 added_ups = new_up_set - self.ups
                 removed_ups = self.ups - new_up_set
 
-                logger.info(f"""检测到数据源配置中 {', '.join([
-                    f'{action}了 {len(ups)} 个主播' for action, ups in [('新增', added_ups), ('移除', removed_ups)] if ups
-                ])}""")
+                tip = [f'{act}了 {len(ups)} 个主播' for act, ups in [('新增', added_ups), ('移除', removed_ups)] if ups]
+                if tip:
+                    logger.info(f"检测到数据源配置中 {', '.join(tip)}")
+                else:
+                    logger.info(f"检测到数据源配置已更新, 开始重载配置")
 
-                for up in new_up_set:
+                for up in new_up_set.union(self.ups):
                     if up in added_ups:
                         self.add(up)
                     elif up in removed_ups:
