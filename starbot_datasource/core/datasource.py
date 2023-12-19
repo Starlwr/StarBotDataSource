@@ -22,6 +22,9 @@ class DataSource(metaclass=abc.ABCMeta):
         self.uids: Set[int] = set()
         self.__up_map: Dict[int, Up] = {}
 
+    def __getitem__(self, key):
+        return self.__up_map[key]
+
     @abc.abstractmethod
     async def load(self) -> NoReturn:
         """
