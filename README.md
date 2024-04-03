@@ -12,7 +12,7 @@
 
 ## 用途
 
-* 已内置 字典数据源(DictDataSource) 和 JSON 数据源(JsonDataSource) 实现
+* 已内置 JSON 数据源(JsonDataSource) 实现
 * 可自行实现其他来源的推送配置数据源
 
 ## 快速开始
@@ -53,6 +53,6 @@ class CustomDataSource(DataSource):
         logger.success(f"成功从 自定义来源 中导入了 {len(self.ups)} 个 UP 主")
 ```
 
-## 鸣谢
+## 相关项目
 
 * [StarBotExecutor](https://github.com/Starlwr/StarBotExecutor): 一个基于订阅发布模式的异步执行器
