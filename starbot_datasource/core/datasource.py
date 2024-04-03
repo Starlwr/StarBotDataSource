@@ -3,12 +3,13 @@ import asyncio
 import json
 import os
 from json import JSONDecodeError
-from typing import List, Dict, Union, Optional, NoReturn, Set
+from typing import Dict, NoReturn, Set
 
 from loguru import logger
 from pydantic import ValidationError
 from starbot_executor import executor
 
+from .. import config
 from ..core.event import EventType, DataSourceEvent
 from ..core.model import Up
 from ..exception.DataSourceException import DataSourceException
@@ -88,48 +89,17 @@ class DataSource(metaclass=abc.ABCMeta):
         executor.dispatch(up, EventType.DataSourceEvent, DataSourceEvent.DataSourceUpdated)
 
 
-class DictDataSource(DataSource):
-    """
-    使用字典初始化的推送配置数据源
-    """
-
-    def __init__(self, dict_config: Union[List[Dict], Dict]):
-        super().__init__()
-        self.__config = dict_config
-
-        if isinstance(self.__config, dict):
-            self.__config = [self.__config]
-
-    async def load(self) -> NoReturn:
-        """
-        从字典中初始化配置
-        """
-        if self.ups:
-            return
-
-        logger.info("已选用 Dict 作为 Bot 数据源")
-        logger.info("开始从 Dict 中初始化 Bot 配置")
-
-        for up in self.__config:
-            try:
-                self.add(Up(**up))
-            except ValidationError as ex:
-                raise DataSourceException(f"提供的配置字典中缺少必须的 {ex.errors()[0].get('loc')[-1]} 参数")
-
-        logger.success(f"成功从 Dict 中导入了 {len(self.ups)} 个 UP 主")
-
-
 class JsonDataSource(DataSource):
     """
     使用 JSON 初始化的推送配置数据源
     """
-    def __init__(self, json_file: str, auto_reload: Optional[bool] = True, auto_reload_interval: Optional[int] = 5):
+    def __init__(self):
         super().__init__()
         self.__config = None
 
-        self.__json_file = json_file
-        self.__auto_reload = auto_reload
-        self.__auto_reload_interval = auto_reload_interval
+        self.__json_file = config.get("datasource.json_datasource.file_path", str, "推送配置.json")
+        self.__auto_reload = config.get("datasource.json_datasource.auto_reload", bool, True)
+        self.__auto_reload_interval = config.get("datasource.json_datasource.auto_reload_interval", int, 5)
 
     async def load(self) -> NoReturn:
         """
