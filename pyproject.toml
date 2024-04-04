@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "starbot-bilibili-datasource"
-version = "1.2.0"
+version = "1.2.1"
 description = "StarBot 推送配置数据源"
 keywords = ["starbot", "bilibili", "bot"]
 license = "AGPL-3.0-only"
@@ -12,7 +12,7 @@ packages = [{ include = "starbot_datasource" }]
 [tool.poetry.dependencies]
 python = "^3.10"
 starbot-executor = "^1.4.0"
-pydantic = "^2.5.2"
+pydantic = "^1.9"
 loguru = "^0.7.2"
 
 
